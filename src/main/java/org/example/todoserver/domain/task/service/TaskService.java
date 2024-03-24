@@ -9,6 +9,9 @@ import org.example.todoserver.domain.task.repository.TaskRepository;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +31,42 @@ public class TaskService {
         var saved = taskRepository.save(entity);
 
         return toResponse(saved);
+    }
+
+    public List<TaskResponse> getTask(Optional<String> dueDate) {
+        if(dueDate.isPresent()) {
+            return getByDueDate(dueDate.get());
+        } else {
+            return getAll();
+        }
+    }
+
+    private List<TaskResponse> getAll() {
+        return taskRepository.findAll()
+                .stream()
+                .map(this::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    private List<TaskResponse> getByDueDate(String dueDate) {
+        return taskRepository.findAllByDueDate(Date.valueOf(dueDate))
+                .stream()
+                .map(this::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    public List<TaskResponse> getByStatus(TaskStatus status) {
+        return taskRepository.findAllByStatus(status)
+                .stream()
+                .map(this::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    public TaskResponse getOne(Long id) {
+        var entity = taskRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException(String.format("not exists task id [%d]", id)));
+
+        return toResponse(entity);
     }
 
     private TaskResponse toResponse(TaskEntity entity) {

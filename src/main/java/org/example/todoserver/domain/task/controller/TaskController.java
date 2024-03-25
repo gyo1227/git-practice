@@ -3,6 +3,7 @@ package org.example.todoserver.domain.task.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.todoserver.domain.task.constants.TaskStatus;
+import org.example.todoserver.domain.task.model.ResultResponse;
 import org.example.todoserver.domain.task.model.TaskRequest;
 import org.example.todoserver.domain.task.model.TaskResponse;
 import org.example.todoserver.domain.task.model.TaskStatusRequest;
@@ -87,6 +88,17 @@ public class TaskController {
     public ResponseEntity<TaskResponse> updateTaskStatus(@PathVariable Long id, @RequestBody TaskStatusRequest taskStatusRequest) {
         var response = taskService.updateStatus(id, taskStatusRequest.getStatus());
         return ResponseEntity.ok(response);
+    }
+
+    /**
+     * 특정 ID에 해당하는 할일을 삭제
+     * @param id 삭제할 할일 ID
+     * @return 삭제 결과를 담은 응답 객체
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ResultResponse> deleteTask(@PathVariable Long id) {
+        var response = taskService.delete(id);
+        return ResponseEntity.ok(new ResultResponse(response));
     }
 
 }

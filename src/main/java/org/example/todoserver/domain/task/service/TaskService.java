@@ -95,6 +95,16 @@ public class TaskService {
         return toResponse(response);
     }
 
+    public boolean delete(Long id) {
+        try {
+            taskRepository.deleteById(id);
+        } catch(Exception e) {
+            log.error("an error occurred while deleting [{}]", e.toString());
+            return false;
+        }
+        return true;
+    }
+
     private TaskResponse toResponse(TaskEntity entity) {
         return TaskResponse.builder()
                 .id(entity.getId())

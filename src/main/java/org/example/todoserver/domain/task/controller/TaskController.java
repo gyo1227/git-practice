@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.todoserver.domain.task.constants.TaskStatus;
 import org.example.todoserver.domain.task.model.TaskRequest;
 import org.example.todoserver.domain.task.model.TaskResponse;
+import org.example.todoserver.domain.task.model.TaskStatusRequest;
 import org.example.todoserver.domain.task.service.TaskService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -63,4 +64,29 @@ public class TaskController {
         var response = taskService.getByStatus(status);
         return ResponseEntity.ok(response);
     }
+
+    /**
+     * 특정 ID에 해당하는 할일을 수정
+     * @param id 할일 ID
+     * @param taskRequest 수정할 할일 정보
+     * @return 수정된 할일 객체
+     */
+    @PutMapping("/{id}")
+    public ResponseEntity<TaskResponse> updateTask(@PathVariable Long id, @RequestBody TaskRequest taskRequest) {
+        var response = taskService.update(id, taskRequest);
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * 특정 ID에 해당하는 할일의 상태를 수정
+     * @param id 할일 ID
+     * @param taskStatusRequest 수정할 할일 상태 정보
+     * @return 수정된 할일 객체
+     */
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<TaskResponse> updateTaskStatus(@PathVariable Long id, @RequestBody TaskStatusRequest taskStatusRequest) {
+        var response = taskService.updateStatus(id, taskStatusRequest.getStatus());
+        return ResponseEntity.ok(response);
+    }
+
 }
